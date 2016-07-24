@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Collections;
 
 /**
  * Provides sorting algorithms.
@@ -64,7 +65,22 @@ public class ListSorter<T> {
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
-        return null;
+        //base cases
+        if(list == null) return null;
+        if(list.size() == 1) return list;
+
+        int start = 0;
+        int middle = list.size()/2;
+        int end = list.size();
+        
+        List<T> left = mergeSort(list.subList(start,middle), comparator);
+        List<T> right = mergeSort(list.subList(middle,end), comparator);
+        
+        List<T> merged = new ArrayList<T>(left);
+        merged.addAll(right);
+        Collections.sort(merged, comparator);
+        
+        return merged;
 	}
 
 	/**
@@ -76,6 +92,13 @@ public class ListSorter<T> {
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
+        PriorityQueue<T> pq = new PriorityQueue<T>(list.size(), comparator);
+        pq.addAll(list);
+        list.clear();
+
+        while(!pq.isEmpty()){
+        	list.add(pq.poll());
+        }
 	}
 
 	
@@ -90,7 +113,24 @@ public class ListSorter<T> {
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
-        return null;
+        PriorityQueue<T> pq = new PriorityQueue<T>(list.size(), comparator);
+
+        for(T item: list){
+        	if(pq.size() < k){
+        		pq.offer(item);
+        		continue;
+        	}
+        	if(comparator.compare(item,pq.peek()) > 0){
+        		pq.poll();
+        		pq.offer(item);
+        	}
+        }
+
+        List<T> toReturn = new ArrayList<>();
+        while(!pq.isEmpty()){
+        	toReturn.add(pq.poll());
+        }
+        return toReturn;
 	}
 
 	
@@ -98,6 +138,7 @@ public class ListSorter<T> {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
 		List<Integer> list = new ArrayList<Integer>(Arrays.asList(3, 5, 1, 4, 2));
 		
 		Comparator<Integer> comparator = new Comparator<Integer>() {
